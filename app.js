@@ -28,7 +28,8 @@ app.get('/', function(req, res) {
 
 app.post('/search', function(req, res) {
   var query = encode_URI(req.body.querystring);
-  twitter.search({q:query}, accToken, accTokenSecret, function (error, data, response) {
+  var count = 100;
+  twitter.search({q:query, count: count}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
@@ -50,8 +51,9 @@ function extract_data (data) {
       tags:data.statuses[i].entities.hashtags, 
       time:data.statuses[i].created_at, 
       loc:data.statuses[i].place});
+    console.log(tweets[i].text);
   }
-  console.log(JSON.stringify(tweets));
+  // console.log(JSON.stringify(tweets));
   return tweets;
 }
 

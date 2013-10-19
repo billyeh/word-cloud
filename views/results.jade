@@ -18,6 +18,11 @@ head
       stroke-linejoin: round;
       stroke-linecap: round;
     }
+
+    .twts {
+        border-width: 2px;
+        border-color: black;
+    }
 body
   div(align='center')
     h1 WordCloud
@@ -25,8 +30,16 @@ body
     h3 Relevant Tweets:
     - var tweets = JSON.parse(data)
     each t in tweets
-      div
-        p= t.name
-        p!= t.text
-        p= t.time
+      if t.sentiment == 4
+        div.twts
+          span= t.name
+          span(style="float:right;")= t.time
+          p(class="alert alert-success")!= t.text
+      if t.sentiment == 2
+          
+      if t.sentiment == 0
+        div.twts
+          span= t.name 
+          span(style="float:right;")= t.time
+          p(class="alert alert-danger")!= t.text
   script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=800&h=350')

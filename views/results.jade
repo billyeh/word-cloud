@@ -42,12 +42,21 @@ head
       padding: 1px !important;
       margin-bottom: 5px;
     }
+    .panel-title {
+      font-size: inherit !important;
+    }
+    h3 {
+      display: inline-block;
+      margin-top:0px;
+    }
 body
   div(align='center')
     h1 
       span Word
       span(style="color:3AA9E8") Cloud
   div.col-md-3(style="height:850px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
+    h3 Sentimental Tweets
+    span(style='float:right;margin-top:5px;', id='show-all') Show all
     - var tweets = JSON.parse(data)
     - var already_displayed = {}
     div.panel-group#accordion
@@ -123,3 +132,8 @@ body
         g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
       }
     script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=960&h=350')
+
+    script.
+      $('#show-all').click(function() {
+        $('a.accordion-toggle').click();
+      });

@@ -51,7 +51,7 @@ function extract_data (data, query, res) {
     var tweet = {
           id:element.id,
           name:element.user.screen_name, 
-          text:element.text, 
+          text:relink(element.text), 
           tags:element.entities.hashtags, 
           time:element.created_at.split('+')[0] + element.created_at.split('+')[1].split(' ')[1],
           location:element.user.location,
@@ -103,4 +103,12 @@ function encode_URI(uri) {
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
   }
+}
+
+function relink(link) {
+  var ret = link.replace(/http:\/\/([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
+    '<a href="http://$1" target="_blank">http://$1</a>');
+  ret = ret.replace(/@([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
+    '<a href="https://twitter.com/$1" target="_blank">@$1</a>');
+  return ret;
 }

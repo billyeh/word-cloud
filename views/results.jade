@@ -149,6 +149,12 @@ body
           .translate([0, 0])
           .scale(width / 2 / Math.PI);
     var svg = d3.select('svg');
+    svg.append("text")
+        .attr("x", (0))             
+        .attr("y", 15)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Tweets Grouped by Region and Overall Sentiment of Region");
     svg.selectAll("circles")
           .data(data)
         .enter()
@@ -158,13 +164,13 @@ body
           })
           .style("fill", function(d) {
               if (d.sentiment / d.size > 2) {
-                  return '#dffbd8';
+                  return '#4efb4e';
               }
               else if (d.sentiment / d.size < 2) {
-                  return '#fbdede';
+                  return '#fb4e4e';
               }
               else {
-                  return '#dedefb';
+                  return '#4e4efb';
               }
           })
           .attr("transform", function(d) {

@@ -5,7 +5,8 @@
   "private": true,
   "dependencies": {
     "express": "3.x",
-    "node-rest-client": "0.7.0"
+    "node-rest-client": "0.7.0",
+    "node-oauth": "0.1.3"
   }
 
 }

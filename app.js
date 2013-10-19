@@ -48,7 +48,9 @@ app.listen(3000);
 function extract_data (data, query, res) {
   data.statuses.forEach(function(element, index) {
     var endpoint = 'http://www.sentiment140.com/api/classify?';
-    var tweet = {name:element.user.screen_name, 
+    var tweet = {
+          id:element.id,
+          name:element.user.screen_name, 
           text:element.text, 
           tags:element.entities.hashtags, 
           time:element.created_at, 

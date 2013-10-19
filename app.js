@@ -46,12 +46,14 @@ app.listen(3000);
 function extract_data (data, query) {
   var tweets = [];
   for (var i=0; i< data.statuses.length; i++) {
+    var sentiment = get_sentiment(data.statuses[i].text, query);
+    console.log(sentiment);
     tweets.push({name:data.statuses[i].user.screen_name, 
       text:data.statuses[i].text, 
       tags:data.statuses[i].entities.hashtags, 
       time:data.statuses[i].created_at, 
       loc:data.statuses[i].place,
-      sentiment:get_sentiment(data.statuses[i].text, query)});
+      sentiment:sentiment});
   }
   return tweets;
 }
@@ -68,13 +70,16 @@ function encode_URI(uri) {
 
 function get_sentiment(tweet_text, query) {
   var endpoint = 'http://www.sentiment140.com/api/classify?';
+  var sentiment = 2;
   endpoint += 'text=' + encode_URI(tweet_text);
   endpoint += '&query=' + encode_URI(query);
   request(endpoint, function(error, response, body) {
     if (error) {
       console.log(JSON.stringify(error));
-    } else {
-      console.log(JSON.stringify(body.results.polarity));
     }
-  })
+    if (!error && body) {
+      sentiment = JSON.parse(body).results.polarity;
+      return sentiment;
+    }
+  });
 }

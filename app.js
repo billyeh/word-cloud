@@ -52,16 +52,38 @@ function extract_data (data, query, res) {
           text:element.text, 
           tags:element.entities.hashtags, 
           time:element.created_at, 
-          loc:element.place};
+          location:element.user.location,
+      	  coordinates:element.geo};
     endpoint += 'text=' + encode_URI(element.text);
     endpoint += '&query=' + encode_URI(query);
     request(endpoint, function(error, response, body) {
-      console.log(JSON.stringify(tweet));
       if (error) {
         console.log(JSON.stringify(error));
       }
       if (!error && body) {
         tweet.sentiment = JSON.parse(body).results.polarity;
+        var geocodeURL = "http://open.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluubnuu12d%2C25%3Do5-9u1xlw&location="
+        if (!tweet.coordinates) {
+        	var geoQuery = encodeURIComponent(tweet.location);
+        	request(geocodeURL+geoQuery, function (err, response, body){
+        		if (error) {
+        			console.log(JSON.stringify(error));
+        		}
+        		if (!error && body) {
+        			data_geo = JSON.parse(body);
+	        		if (data_geo.results[0].locations[0]) {
+						var lat = data_geo.results[0].locations[0].displayLatLng.lat;
+						var lng = data_geo.results[0].locations[0].displayLatLng.lng;
+						var latlng = [lat, lng];
+						tweet.coordinates = latlng;
+						tweets.push(tweet);
+						if (index == data.statuses.length-1) {
+				          res.render('results.jade', {data:JSON.stringify(tweets)});
+				        }
+					}
+        		}
+        	});
+        }
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
           res.render('results.jade', {data:JSON.stringify(tweets)});
@@ -69,28 +91,6 @@ function extract_data (data, query, res) {
       }
     });
   });
-}
-
-function extract_locations (data) {
-	var tweets = extract_data(data);
-	var locations = [];
-	for (var i=0; i < tweets.length; i++) {
-		if (!tweets[i].geo) {
-			geocoder.geocode(tweets[i].location, function (err, data) {
-				if (err) {
-			    	console.log(JSON.stringify(err));
-			    }
-			    else { // success!!
-			    	console.log(data);
-			    	locations.push(data);
-			    }
-			});
-		} else {
-			locations.push(tweets[i].geo.coordinates);
-		}
-	}
-	console.log(JSON.stringify(locations));
-	return locations;
 }
 
 function encode_URI(uri) {

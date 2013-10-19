@@ -8,31 +8,14 @@ var twitter = new twitterAPI({
 });
 
 app.get('/', function(req, res) {
-  var reqToken;
-  var reqTokenSecret;
-  var oauth_verifier = 6184592;
-  var accToken;
-  var accTokenSecret;
-  twitter.getRequestToken(function(error, requestToken, requestTokenSecret, results){
-    if (error) {
-      console.log("Error getting OAuth request token : " + JSON.stringify(error));
-    } else {
-      reqToken = requestToken;
-      reqTokenSecret = requestTokenSecret;
-      console.log('Request token:' + reqToken);
-      console.log('Request token secret:' + reqTokenSecret);
-    }
-  });
-  twitter.getAccessToken(reqToken, reqTokenSecret, oauth_verifier, function(error, accessToken, accessTokenSecret, results) {
+  var accToken = '829348675-dB86OcFHh4wZOAizD4YREA8TAGhlwYoP0pTXzzy1';
+  var accTokenSecret = 'IwRsYAGz9xZfaJWAU870slwsSaFJKT6v5WsIT1h5nI';
+  twitter.search({q:'bart strike'}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
-    } else {
-      /*
-      accToken = accessToken;
-      accTokenSecret = accessTokenSecret;
-      console.log('Access token:' + accToken);
-      console.log('Access token secret:' + accTokenSecret);
-      */
+    }
+    else {
+      console.log(JSON.stringify(data));
     }
   });
   res.end('hello');

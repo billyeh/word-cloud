@@ -86,7 +86,7 @@ function extract_data (data, query, res) {
         }
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
-          res.render('results.jade', {data:JSON.stringify(tweets)});
+          res.render('results.jade', {data:JSON.stringify(tweets), q:query});
         }
       }
     });

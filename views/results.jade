@@ -55,6 +55,14 @@ head
         padding-bottom: 15px;
         padding-left: 5px;
     }
+    #bar-graph {
+        font: 10px sans-serif;
+        background-color: steelblue;
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+    }
 body
   div(id="title", align='left')
     span
@@ -63,11 +71,12 @@ body
     div(style="float:right;padding-top:17px;padding-right:3px;")
       form(action='search', method='post')
           div.input-group
-            input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
-            button(style='line-height: 2;', id='search', type='submit', value='Search', name='firstbutton') Search
+            input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;vertical-align:top;')
+            button(style='line-height:2;vertical-align:top;', id='search', type='submit', value='Search', name='firstbutton') Search
   div.col-md-3(style="max-height:750px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     h3 Sentimental Tweets
     span(style='float:right;margin-top:5px;', id='show-all') Show all
+    div#left-side(style="padding:10px;")
     - var tweets = JSON.parse(data)
     - var already_displayed = {}
     div.panel-group#accordion
@@ -87,6 +96,17 @@ body
               div(id= t.id, class='panel-collapse collapse')
                 div.panel-body
                   p!= t.text
+    p(style='display:none', id='sentimentCount')= JSON.stringify(sentimentCount)
+    script.
+        var chart = d3.select("#left-side").insert("div")
+                    .attr("id", "bar-graph");
+        var data = JSON.parse($('p#sentimentCount').text());
+        console.log(typeof data);
+        chart.selectAll("div").data(data).enter()
+             .append("div").style("width", function(d) {return d*5 + "px";})
+             .text(function(d) {return d;});
+
+
   div#right-side
     script.
       var width = 960,

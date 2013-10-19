@@ -56,6 +56,9 @@ app.listen(3000);
 
 // Helper functions
 function extract_data (data, query, res) {
+  var positive = 0;
+  var negative = 0;
+  var neutral = 0;
   data.statuses.forEach(function(element, index) {
     var endpoint = 'http://www.sentiment140.com/api/classify?';
     var tweet = {
@@ -74,6 +77,13 @@ function extract_data (data, query, res) {
       }
       if (!error && body) {
         tweet.sentiment = JSON.parse(body).results.polarity;
+        if (tweet.sentiment == 4) {
+        	positive++;
+        } else if (tweet.sentiment == 2) {
+        	neutral++;
+        } else {
+        	negative++;
+        }
         var geocodeURL = "http://open.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluubnuu12d%2C25%3Do5-9u1xlw&location="
         if (!tweet.coordinates) {
         	var geoQuery = encodeURIComponent(tweet.location);
@@ -100,7 +110,13 @@ function extract_data (data, query, res) {
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
           var grouped = group_on_map(tweets);
-          res.render('results.jade', {data:JSON.stringify(tweets), q:query, grouped:grouped});
+          var sentimentCount = [];
+          sentimentCount.push(positive);
+          sentimentCount.push(negative);
+          sentimentCount.push(neutral);
+          console.log("LOOK HERE!!!!!!!!");
+          console.log(sentimentCount);
+          res.render('results.jade', {data:JSON.stringify(tweets), q:query, grouped:grouped, sentimentCount:sentimentCount});
         }
       }
     });

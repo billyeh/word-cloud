@@ -171,6 +171,39 @@ body
         .style("font-size", "13px") 
         .style('font-color', '#444')
         .text("Tweets Grouped by Region and Overall Sentiment of Region");
+    svg.append("text")
+        .attr("x", 50)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Positive");
+    svg.append("circle")
+        .attr("cx", 35)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", 'rgb(70, 136, 71)');
+    svg.append("text")
+        .attr("x", 200)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Neutral");
+    svg.append("circle")
+        .attr("cx", 185)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", '#3a87ad');
+    svg.append("text")
+        .attr("x", 120)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Negative");
+    svg.append("circle")
+        .attr("cx", 107)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", 'rgb(185, 74, 72)');
     svg.selectAll("circles")
           .data(data)
         .enter()

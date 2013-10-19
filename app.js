@@ -170,6 +170,7 @@ function extract_hashtags(hashtags, ret) {
       }
     }
   }
+  console.log(ret);
   return ret;
 }
 

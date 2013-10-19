@@ -34,8 +34,8 @@ app.post('/search', function(req, res) {
     }
     else { // success!!
       var tweets = extract_data(data);
-      res.render('results.jade', {data: tweets});
-      console.log(JSON.stringify(tweets));
+      res.render('results.jade', {data:tweets});
+      // console.log(JSON.stringify(tweets));
     }
   });
 });

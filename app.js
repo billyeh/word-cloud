@@ -1,6 +1,4 @@
 var express = require('express');
-var Client = require('node-rest-client').Client;
-client = new Client();
 var app = express();
 
 app.get('/', function(req, res) {

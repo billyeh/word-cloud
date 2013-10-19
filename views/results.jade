@@ -11,7 +11,7 @@ head
     }
 
     .land {
-      fill: #000;
+      fill: #DDD;
     }
 
     .boundary {
@@ -29,7 +29,6 @@ body
   div(align='center')
     h1 WordCloud
   div.col-md-3
-    h3 Relevant Tweets:
     - var tweets = JSON.parse(data)
     each t in tweets
       if t.sentiment == 4
@@ -49,7 +48,7 @@ body
       var width = 960,
       height = 500;
 
-      var projection = d3.geo.mercator()
+      var projection = d3.geo.equirectangular()
           .translate([0, 0])
           .scale(width / 2 / Math.PI);
 
@@ -76,7 +75,7 @@ body
           .attr("width", width)
           .attr("height", height);
 
-      d3.json("http://bl.ocks.org/mbostock/raw/4090846/world-50m.json", function(error, world) {
+      d3.json("/world-50m.json", function(error, world) {
         g.append("path")
             .datum(topojson.feature(world, world.objects.countries))
             .attr("class", "land")

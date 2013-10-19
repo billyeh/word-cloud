@@ -158,10 +158,13 @@ body
           })
           .style("fill", function(d) {
               if (d.sentiment / d.size > 2) {
-                  return '#dff0d8';
+                  return '#dffbd8';
               }
               else if (d.sentiment / d.size < 2) {
-                  return '#f2dede';
+                  return '#fbdede';
+              }
+              else {
+                  return '#dedefb'
               }
           })
           .attr("transform", function(d) {

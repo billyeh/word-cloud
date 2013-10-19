@@ -64,3 +64,9 @@ function encode_URI(uri) {
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
 }
+
+function get_sentiment(tweet_text, query) {
+  var endpoint = 'http://www.sentiment140.com/api/classify?';
+  endpoint += 'text=' + encode_URI(tweet_text);
+  endpoint += '&query=' + encode_URI(query);
+}

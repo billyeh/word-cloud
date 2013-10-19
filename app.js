@@ -23,6 +23,8 @@ var accToken = '829348675-dB86OcFHh4wZOAizD4YREA8TAGhlwYoP0pTXzzy1';
 var accTokenSecret = 'IwRsYAGz9xZfaJWAU870slwsSaFJKT6v5WsIT1h5nI';
 
 // Routing
+var tweets = [];
+var sentiments = [];
 app.get('/', function(req, res) {
   res.render('index.jade');
 });
@@ -36,34 +38,37 @@ app.post('/search', function(req, res) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
-      var tweets = extract_data(data);
-      var locations = extract_locations(data);
-      res.render('results.jade', {tweets:JSON.stringify(tweets), locations:JSON.stringify(locations)});
+      extract_data(data, query, res);
     }
   });
 });
 
 app.listen(3000);
 
-function extract_data (data, query) {
-  var tweets = [];
-  //console.log(JSON.stringify(data));
-  for (var i=0; i< data.statuses.length; i++) {
-    var sentiment = get_sentiment(data.statuses[i].text, query);
-    console.log(sentiment);
-    tweets.push({name:data.statuses[i].user.screen_name, 
-      text:data.statuses[i].text, 
-      tags:data.statuses[i].entities.hashtags, 
-      time:data.statuses[i].created_at,
-      //place:data.statuses[i].place,
-  	  geo:data.statuses[i].geo,
-  	  coordinates:data.statuses[i].coordinates,
-  	  location:data.statuses[i].user.location
-  	 });
-
-    sentiment:sentiment});
-  }
-  return tweets;
+function extract_data (data, query, res) {
+  data.statuses.forEach(function(element, index) {
+    var endpoint = 'http://www.sentiment140.com/api/classify?';
+    var tweet = {name:element.user.screen_name, 
+          text:element.text, 
+          tags:element.entities.hashtags, 
+          time:element.created_at, 
+          loc:element.place};
+    endpoint += 'text=' + encode_URI(element.text);
+    endpoint += '&query=' + encode_URI(query);
+    request(endpoint, function(error, response, body) {
+      console.log(JSON.stringify(tweet));
+      if (error) {
+        console.log(JSON.stringify(error));
+      }
+      if (!error && body) {
+        tweet.sentiment = JSON.parse(body).results.polarity;
+        tweets.push(tweet);
+        if (index == data.statuses.length-1) {
+          res.render('results.jade', {data:JSON.stringify(tweets)});
+        }
+      }
+    });
+  });
 }
 
 function extract_locations (data) {
@@ -96,20 +101,4 @@ function encode_URI(uri) {
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
   }
-}
-
-function get_sentiment(tweet_text, query) {
-  var endpoint = 'http://www.sentiment140.com/api/classify?';
-  var sentiment = 2;
-  endpoint += 'text=' + encode_URI(tweet_text);
-  endpoint += '&query=' + encode_URI(query);
-  request(endpoint, function(error, response, body) {
-    if (error) {
-      console.log(JSON.stringify(error));
-    }
-    if (!error && body) {
-      sentiment = JSON.parse(body).results.polarity;
-      return sentiment;
-    }
-  });
 }

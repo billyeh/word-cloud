@@ -63,7 +63,7 @@ function extract_data (data, query, res) {
         tweet.sentiment = JSON.parse(body).results.polarity;
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
-          res.render('results.jade', {data:JSON.stringify(tweets)});
+          res.render('results.jade', {data:JSON.stringify(tweets), q:query});
         }
       }
     });

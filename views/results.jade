@@ -24,10 +24,6 @@ head
       stroke: #333;
     }
 
-    .twts {
-        border-width: 2px;
-        border-color: black;
-    }
     ::-webkit-scrollbar {
         height: 12px;
         width: 5px;
@@ -55,11 +51,20 @@ head
     #show-all {
       cursor: pointer; !important
     }
+    #title {
+        padding-bottom: 15px;
+        padding-left: 5px;
+    }
 body
-  div(align='center')
-    h1 
-      span Word
-      span(style="color:3AA9E8") Cloud
+  div(id="title", align='left')
+    span
+      span(style="font-size:45px;") Word
+      span(style="color:3AA9E8; font-size:45px;") Cloud
+    div(style="float:right;padding-top:17px;padding-right:3px;")
+      form(action='search', method='post')
+          div.input-group
+            input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
+            button(style='line-height: 2;', id='search', type='submit', value='Search', name='firstbutton') Search
   div.col-md-3(style="max-height:750px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     h3 Sentimental Tweets
     span(style='float:right;margin-top:5px;', id='show-all') Show all

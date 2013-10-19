@@ -2,6 +2,7 @@
 var express = require('express');
 var twitterAPI = require('node-twitter-api');
 var jade = require('jade');
+var request = require('request');
 
 // Configuration of Express
 var app = express();
@@ -42,7 +43,6 @@ app.post('/search', function(req, res) {
 
 app.listen(3000);
 
-
 function extract_data (data) {
   var tweets = [];
   for (var i=0; i< data.statuses.length; i++) {
@@ -51,9 +51,7 @@ function extract_data (data) {
       tags:data.statuses[i].entities.hashtags, 
       time:data.statuses[i].created_at, 
       loc:data.statuses[i].place});
-    console.log(tweets[i].text);
   }
-  // console.log(JSON.stringify(tweets));
   return tweets;
 }
 
@@ -69,4 +67,9 @@ function get_sentiment(tweet_text, query) {
   var endpoint = 'http://www.sentiment140.com/api/classify?';
   endpoint += 'text=' + encode_URI(tweet_text);
   endpoint += '&query=' + encode_URI(query);
+  request(endpoint, function(error, response, body) {
+    if (error) {
+      console.log(JSON.stringify(error));
+    }
+  })
 }

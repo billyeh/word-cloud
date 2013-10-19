@@ -31,6 +31,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/search', function(req, res) {
+  res.header('Access-Control-Allow-Origin', "*"); // pretty sure this is terrible
   var query = encode_URI(req.body.querystring);
   var geocode = "37.781157,-122.398720,4000mi";
   var count = 100;
@@ -41,6 +42,13 @@ app.post('/search', function(req, res) {
     else { // success!!
       extract_data(data, query, res);
     }
+  });
+});
+
+app.get('/world-50m.json', function(req, res) {
+  fs.readFile('./world-50m.json', function(err, bytes, buffer) {
+    res.writeHead(200, {"Content-Type": 'json'});
+    res.end(bytes, 'utf-8');
   });
 });
 

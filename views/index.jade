@@ -8,7 +8,6 @@ body
     p
       em Satisfy your need to learn about stupid trivial things.
     form(action='search', method='post')
-      input(autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
-      br
-      input(id='search', type='submit', value='Search', name='firstbutton')
-      input(id='feelinglucky', type='submit', value='Random Trend', name='secondbutton')
+      div.input-group
+        input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
+        button(style='line-height: 2;', id='search', type='submit', value='Search', name='firstbutton') Search

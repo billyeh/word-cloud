@@ -33,14 +33,14 @@ body
     - var tweets = JSON.parse(data)
     each t in tweets
       if t.sentiment == 4
-        div.twts
+        div
           span= t.name
           span(style="float:right;")= t.time
           p(class="alert alert-success")!= t.text
       if t.sentiment == 2
           
       if t.sentiment == 0
-        div.twts
+        div
           span= t.name 
           span(style="float:right;")= t.time
           p(class="alert alert-danger")!= t.text

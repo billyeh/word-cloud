@@ -55,7 +55,7 @@ function extract_data (data, query, res) {
           name:element.user.screen_name, 
           text:relink(element.text), 
           tags:element.entities.hashtags, 
-          time:element.created_at.split('+')[0] + element.created_at.split('+')[1].split(' ')[1],
+          time:element.created_at.split('+')[0],
           location:element.user.location,
       	  coordinates:element.geo};
     endpoint += 'text=' + encode_URI(element.text);

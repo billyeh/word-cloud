@@ -33,10 +33,9 @@ app.post('/search', function(req, res) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
-      res.render('index.jade', {title: 'Franz Enzenhofer'});
-      console.log(JSON.stringify(data));
       var tweets = extract_data(data);
-      console.log(JSON.stringify(tweets));
+      res.render('results.jade', {data:tweets});
+      // console.log(JSON.stringify(tweets));
     }
   });
 });

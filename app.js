@@ -25,4 +25,8 @@ app.get('/', function(req, res) {
   });
 });
 
+app.get('/search', function(req, res) {
+  res.end(req.query.querystring);
+});
+
 app.listen(3000);

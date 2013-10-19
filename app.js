@@ -2,7 +2,7 @@
 var express = require('express');
 var twitterAPI = require('node-twitter-api');
 var jade = require('jade');
-var geocoder = require('geocoder');
+var request = require('request');
 
 // Configuration of Express
 var app = express();
@@ -30,7 +30,8 @@ app.get('/', function(req, res) {
 app.post('/search', function(req, res) {
   var query = encode_URI(req.body.querystring);
   var geocode = "37.781157,-122.398720,4000mi";
-  twitter.search({q:query, geocode:geocode}, accToken, accTokenSecret, function (error, data, response) {
+  var count = 100;
+  twitter.search({q:query, count: count, geocode:geocode}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
@@ -44,22 +45,24 @@ app.post('/search', function(req, res) {
 
 app.listen(3000);
 
-
-function extract_data (data) {
+function extract_data (data, query) {
   var tweets = [];
   //console.log(JSON.stringify(data));
   for (var i=0; i< data.statuses.length; i++) {
+    var sentiment = get_sentiment(data.statuses[i].text, query);
+    console.log(sentiment);
     tweets.push({name:data.statuses[i].user.screen_name, 
       text:data.statuses[i].text, 
       tags:data.statuses[i].entities.hashtags, 
-      time:data.statuses[i].created_at, 
+      time:data.statuses[i].created_at,
       //place:data.statuses[i].place,
   	  geo:data.statuses[i].geo,
   	  coordinates:data.statuses[i].coordinates,
   	  location:data.statuses[i].user.location
   	 });
+
+    sentiment:sentiment});
   }
-  console.log(JSON.stringify(tweets));
   return tweets;
 }
 
@@ -86,9 +89,27 @@ function extract_locations (data) {
 }
 
 function encode_URI(uri) {
-  return encodeURIComponent(uri.replace(/\!/g, "%21")
+  if (uri) {
+    return encodeURIComponent(uri.replace(/\!/g, "%21")
              .replace(/\'/g, "%27")
              .replace(/\(/g, "%28")
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
+  }
+}
+
+function get_sentiment(tweet_text, query) {
+  var endpoint = 'http://www.sentiment140.com/api/classify?';
+  var sentiment = 2;
+  endpoint += 'text=' + encode_URI(tweet_text);
+  endpoint += '&query=' + encode_URI(query);
+  request(endpoint, function(error, response, body) {
+    if (error) {
+      console.log(JSON.stringify(error));
+    }
+    if (!error && body) {
+      sentiment = JSON.parse(body).results.polarity;
+      return sentiment;
+    }
+  });
 }

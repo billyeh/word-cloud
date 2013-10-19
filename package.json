@@ -7,7 +7,10 @@
     "express": "3.x",
     "node-twitter-api": "1.1.1",
     "jade": "0.35.0",
+<<<<<<< HEAD
     "geocoder": "0.1.0"
+=======
+    "request": "2.27.0"
+>>>>>>> 601b4e79fde6efb48929b4756c32e3068ee6ce0c
   }
-
 }

@@ -106,6 +106,9 @@ function encode_URI(uri) {
 }
 
 function relink(link) {
-  return link.replace(/http:\/\/([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
+  var ret = link.replace(/http:\/\/([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
     '<a href="http://$1" target="_blank">http://$1</a>');
+  ret = ret.replace(/@([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
+    '<a href="https://twitter.com/$1" target="_blank">@$1</a>');
+  return ret;
 }

@@ -67,7 +67,7 @@ body
     div(style="float:right;padding-top:17px;padding-right:3px;")
       form(action='search', method='post')
           div.input-group
-            input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
+            input(class='form-control', value=q, autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
             button(style='line-height: 2;', id='search', type='submit', value='Search', name='firstbutton') Search
   hr
   div.col-md-3(style="max-height:750px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")

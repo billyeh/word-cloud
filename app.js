@@ -161,12 +161,12 @@ function extract_hashtags(hashtags, ret) {
     return ret;
   }
   for (var i = 0; i < hashtags.length; i++) {
-    if (ret.indexOf(hashtags[i].text) == -1) {
+    if (ret.indexOf(hashtags[i].text.toLowerCase()) == -1) {
       if (ret.length == 0) {
-        ret = hashtags[i].text;
+        ret = hashtags[i].text.toLowerCase();
       }
       else {
-        ret = ret + ", " + hashtags[i].text;
+        ret = ret + ", " + hashtags[i].text.toLowerCase();
       }
     }
   }

@@ -154,7 +154,15 @@ body
         .enter()
           .append("circle")
           .attr("r", function(d) {
-              return Math.sqrt(d.size);
+              return 3*Math.sqrt(d.size);
+          })
+          .style("fill", function(d) {
+              if (d.sentiment / d.size > 2) {
+                  return '#dff0d8';
+              }
+              else if (d.sentiment / d.size < 2) {
+                  return '#f2dede';
+              }
           })
           .attr("transform", function(d) {
               var coords = projection([d.coordinates[1], d.coordinates[0]]);

@@ -27,8 +27,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/search', function(req, res) {
-  var query = encodeURIComponent(req.body.querystring);
-  console.log(query);
+  var query = encode_URI(req.body.querystring);
   twitter.search({q:query}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
@@ -36,7 +35,6 @@ app.post('/search', function(req, res) {
     else { // success!!
       var tweets = extract_data(data);
       res.render('results.jade', {data:JSON.stringify(tweets)});
-      // console.log(JSON.stringify(tweets));
     }
   });
 });
@@ -55,5 +53,12 @@ function extract_data (data) {
   }
   console.log(JSON.stringify(tweets));
   return tweets;
+}
 
+function encode_URI(uri) {
+  return encodeURIComponent(uri.replace(/\!/g, "%21")
+             .replace(/\'/g, "%27")
+             .replace(/\(/g, "%28")
+             .replace(/\)/g, "%29")
+             .replace(/\*/g, "%2A"));
 }

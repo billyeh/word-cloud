@@ -35,7 +35,7 @@ app.post('/search', function(req, res) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
-      var tweets = extract_data(data);
+      var tweets = extract_data(data, query);
       res.render('results.jade', {data:JSON.stringify(tweets)});
     }
   });
@@ -43,24 +43,27 @@ app.post('/search', function(req, res) {
 
 app.listen(3000);
 
-function extract_data (data) {
+function extract_data (data, query) {
   var tweets = [];
   for (var i=0; i< data.statuses.length; i++) {
     tweets.push({name:data.statuses[i].user.screen_name, 
       text:data.statuses[i].text, 
       tags:data.statuses[i].entities.hashtags, 
       time:data.statuses[i].created_at, 
-      loc:data.statuses[i].place});
+      loc:data.statuses[i].place,
+      sentiment:get_sentiment(data.statuses[i].text, query)});
   }
   return tweets;
 }
 
 function encode_URI(uri) {
-  return encodeURIComponent(uri.replace(/\!/g, "%21")
+  if (uri) {
+    return encodeURIComponent(uri.replace(/\!/g, "%21")
              .replace(/\'/g, "%27")
              .replace(/\(/g, "%28")
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
+  }
 }
 
 function get_sentiment(tweet_text, query) {
@@ -70,6 +73,8 @@ function get_sentiment(tweet_text, query) {
   request(endpoint, function(error, response, body) {
     if (error) {
       console.log(JSON.stringify(error));
+    } else {
+      console.log(JSON.stringify(body.results.polarity));
     }
   })
 }

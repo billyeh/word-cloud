@@ -52,7 +52,7 @@ app.get('/world-50m.json', function(req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(process.env.VMC_APP_PORT || 3000, null);
 
 // Helper functions
 function extract_data (data, query, res) {

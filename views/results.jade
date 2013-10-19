@@ -52,8 +52,11 @@ head
       cursor: pointer; !important
     }
     #title {
-        padding-bottom: 15px;
+        padding-bottom: -5px;
         padding-left: 5px;
+    }
+    hr {
+      margin-top:5px;
     }
 body
   div(id="title", align='left')
@@ -65,6 +68,7 @@ body
           div.input-group
             input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
             button(style='line-height: 2;', id='search', type='submit', value='Search', name='firstbutton') Search
+  hr
   div.col-md-3(style="max-height:750px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     h3 Sentimental Tweets
     span(style='float:right;margin-top:5px;', id='show-all') Show all

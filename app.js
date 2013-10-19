@@ -16,11 +16,12 @@ app.get('/', function(req, res) {
   var accTokenSecret = 'IwRsYAGz9xZfaJWAU870slwsSaFJKT6v5WsIT1h5nI';
   twitter.search({q:'bart strike'}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
-      console.log(JSON.stringify(error));
+      // console.log(JSON.stringify(error));
     }
     else { // success!!
       res.render('index.jade', {title: 'Franz Enzenhofer'});
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
+      extract_data(data);
     }
   });
 });
@@ -30,3 +31,14 @@ app.get('/search', function(req, res) {
 });
 
 app.listen(3000);
+
+
+function extract_data (data) {
+  var tweets = [];
+  for (var i=0; i< data.statuses.length; i++) {
+    tweets.push({name:data.statuses[i].user.screen_name, text:data.statuses[i].text, tags:data.statuses[i].entities.hashtags, time:data.statuses[i].created_at, loc:data.statuses[i].place});
+  }
+  console.log(JSON.stringify(tweets));
+  return tweets;
+
+}

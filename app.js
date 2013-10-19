@@ -79,19 +79,3 @@ function encode_URI(uri) {
              .replace(/\*/g, "%2A"));
   }
 }
-
-function get_sentiment(tweet_text, query) {
-  var endpoint = 'http://www.sentiment140.com/api/classify?';
-  var sentiment = 2;
-  endpoint += 'text=' + encode_URI(tweet_text);
-  endpoint += '&query=' + encode_URI(query);
-  request(endpoint, function(error, response, body) {
-    if (error) {
-      console.log(JSON.stringify(error));
-    }
-    if (!error && body) {
-      sentiment = JSON.parse(body).results.polarity;
-      sentiments.push(sentiment);
-    }
-  });
-}

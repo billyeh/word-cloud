@@ -91,7 +91,7 @@ function extract_data (data, query, res) {
     						tweets.push(tweet);
     						if (index == data.statuses.length-1) {
                   var grouped = group_on_map(tweets);
-                  res.render('results.jade', {data:JSON.stringify(tweets), grouped:grouped});
+                  res.render('results.jade', {data:JSON.stringify(tweets), q:query, grouped:grouped});
     				    }
     					}
         		}
@@ -100,7 +100,7 @@ function extract_data (data, query, res) {
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
           var grouped = group_on_map(tweets);
-          res.render('results.jade', {data:JSON.stringify(tweets), grouped:grouped});
+          res.render('results.jade', {data:JSON.stringify(tweets), q:query, grouped:grouped});
         }
       }
     });

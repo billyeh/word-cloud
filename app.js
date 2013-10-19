@@ -44,12 +44,6 @@ app.post('/search', function(req, res) {
   });
 });
 
-app.get('/constrained-zoom.svg', function(req, res) {
-  var img = fs.readFileSync('./images/constrained-zoom.svg');
-  res.writeHead(200, {'Content-Type': 'image/gif' });
-  res.end();
-});
-
 app.listen(3000);
 
 // Helper functions

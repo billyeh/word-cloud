@@ -139,13 +139,13 @@ function group_on_map(data) {
       var key = data[i].coordinates.join(',');
     }
     if (!ret[key]) {
-      tags = extract_hashtags(data[i].hashtags, "");
+      tags = extract_hashtags(data[i].tags, "");
       ret[key] = {size:1, sentiment:data[i].sentiment, hashtags: tags, ids:[data[i].id]};
     }
     else {
       ret[key].size += 1;
       ret[key].sentiment += data[i].sentiment;
-      ret[key].hashtags += extract_hashtags(data[i].hashtags, ret[key].hashtags);
+      ret[key].hashtags += extract_hashtags(data[i].tags, ret[key].hashtags);
       ret[key].ids = add_id(ret[key].ids, data[i].id);
     }
   }

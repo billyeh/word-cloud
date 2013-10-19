@@ -90,8 +90,8 @@ function extract_data (data, query, res) {
     						tweet.coordinates = latlng;
     						tweets.push(tweet);
     						if (index == data.statuses.length-1) {
-                  console.log(group_on_map(tweets));
-                  res.render('results.jade', {data:JSON.stringify(tweets)});
+                  var grouped = group_on_map(tweets);
+                  res.render('results.jade', {data:JSON.stringify(tweets), grouped:grouped});
     				    }
     					}
         		}
@@ -99,8 +99,8 @@ function extract_data (data, query, res) {
         }
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
-          console.log(group_on_map(tweets));
-          res.render('results.jade', {data:JSON.stringify(tweets), q:query});
+          var grouped = group_on_map(tweets);
+          res.render('results.jade', {data:JSON.stringify(tweets), grouped:grouped});
         }
       }
     });
@@ -128,7 +128,6 @@ function relink(link) {
 function group_on_map(data) {
   var ret = {};
   for (var i = 0; i < data.length; i++) {
-    console.log(data[i].coordinates);
     if (!data[i].coordinates) {
       continue;
     }

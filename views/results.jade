@@ -57,6 +57,7 @@ head
     }
     hr {
       margin-top:5px;
+      margin-bottom:15px;
     }
 body
   div(id="title", align='left')
@@ -148,6 +149,12 @@ body
     script.
       $('#show-all').click(function() {
         $('a.accordion-toggle').click();
+        if ($(this).text() === 'Show all') {
+          $(this).text('Hide all');
+        }
+        else {
+          $(this).text('Show all');
+        }
       });
 
   p(style='display:none', id='data')= JSON.stringify(grouped)

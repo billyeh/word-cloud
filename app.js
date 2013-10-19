@@ -23,39 +23,73 @@ var accToken = '829348675-dB86OcFHh4wZOAizD4YREA8TAGhlwYoP0pTXzzy1';
 var accTokenSecret = 'IwRsYAGz9xZfaJWAU870slwsSaFJKT6v5WsIT1h5nI';
 
 // Routing
+var tweets = [];
+var sentiments = [];
 app.get('/', function(req, res) {
   res.render('index.jade');
 });
 
 app.post('/search', function(req, res) {
   var query = encode_URI(req.body.querystring);
+  var geocode = "37.781157,-122.398720,4000mi";
   var count = 100;
-  twitter.search({q:query, count: count}, accToken, accTokenSecret, function (error, data, response) {
+  twitter.search({q:query, count: count, geocode:geocode}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
-      var tweets = extract_data(data, query);
-      res.render('results.jade', {data:JSON.stringify(tweets), q:query});
+      extract_data(data, query, res);
     }
   });
 });
 
 app.listen(3000);
 
-function extract_data (data, query) {
-  var tweets = [];
-  for (var i=0; i< data.statuses.length; i++) {
-    var sentiment = get_sentiment(data.statuses[i].text, query);
-    console.log(sentiment);
-    tweets.push({name:data.statuses[i].user.screen_name, 
-      text:data.statuses[i].text, 
-      tags:data.statuses[i].entities.hashtags, 
-      time:data.statuses[i].created_at, 
-      loc:data.statuses[i].place,
-      sentiment:sentiment});
-  }
-  return tweets;
+function extract_data (data, query, res) {
+  data.statuses.forEach(function(element, index) {
+    var endpoint = 'http://www.sentiment140.com/api/classify?';
+    var tweet = {name:element.user.screen_name, 
+          text:element.text, 
+          tags:element.entities.hashtags, 
+          time:element.created_at, 
+          loc:element.place};
+    endpoint += 'text=' + encode_URI(element.text);
+    endpoint += '&query=' + encode_URI(query);
+    request(endpoint, function(error, response, body) {
+      if (error) {
+        console.log(JSON.stringify(error));
+      }
+      if (!error && body) {
+        tweet.sentiment = JSON.parse(body).results.polarity;
+        tweets.push(tweet);
+        if (index == data.statuses.length-1) {
+          res.render('results.jade', {data:JSON.stringify(tweets)});
+        }
+      }
+    });
+  });
+}
+
+function extract_locations (data) {
+	var tweets = extract_data(data);
+	var locations = [];
+	for (var i=0; i < tweets.length; i++) {
+		if (!tweets[i].geo) {
+			geocoder.geocode(tweets[i].location, function (err, data) {
+				if (err) {
+			    	console.log(JSON.stringify(err));
+			    }
+			    else { // success!!
+			    	console.log(data);
+			    	locations.push(data);
+			    }
+			});
+		} else {
+			locations.push(tweets[i].geo.coordinates);
+		}
+	}
+	console.log(JSON.stringify(locations));
+	return locations;
 }
 
 function encode_URI(uri) {
@@ -66,20 +100,4 @@ function encode_URI(uri) {
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
   }
-}
-
-function get_sentiment(tweet_text, query) {
-  var endpoint = 'http://www.sentiment140.com/api/classify?';
-  var sentiment = 2;
-  endpoint += 'text=' + encode_URI(tweet_text);
-  endpoint += '&query=' + encode_URI(query);
-  request(endpoint, function(error, response, body) {
-    if (error) {
-      console.log(JSON.stringify(error));
-    }
-    if (!error && body) {
-      sentiment = JSON.parse(body).results.polarity;
-      return sentiment;
-    }
-  });
 }

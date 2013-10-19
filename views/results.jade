@@ -28,7 +28,7 @@ head
 body
   div(align='center')
     h1 WordCloud
-  div.col-md-3
+  div.col-md-3(style="height:850px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     - var tweets = JSON.parse(data)
     each t in tweets
       if t.sentiment == 4
@@ -95,4 +95,4 @@ body
         zoom.translate(t);
         g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
       }
-    script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=800&h=350')
+    script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=960&h=350')

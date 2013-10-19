@@ -55,7 +55,6 @@ function extract_data (data, query, res) {
     endpoint += 'text=' + encode_URI(element.text);
     endpoint += '&query=' + encode_URI(query);
     request(endpoint, function(error, response, body) {
-      console.log(JSON.stringify(tweet));
       if (error) {
         console.log(JSON.stringify(error));
       }

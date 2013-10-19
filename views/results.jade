@@ -153,8 +153,9 @@ body
           .data(data)
         .enter()
           .append("circle")
-          .attr("r",5)
+          .attr("r", function(d) {
+              return Math.sqrt(d.size);
+          })
           .attr("transform", function(d) {
               var coords = projection([d.coordinates[1], d.coordinates[0]]);
-              console.log("translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")");
               return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";});

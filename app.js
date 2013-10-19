@@ -2,6 +2,7 @@
 var express = require('express');
 var twitterAPI = require('node-twitter-api');
 var jade = require('jade');
+var geocoder = require('geocoder');
 
 // Configuration of Express
 var app = express();
@@ -28,13 +29,15 @@ app.get('/', function(req, res) {
 
 app.post('/search', function(req, res) {
   var query = encode_URI(req.body.querystring);
-  twitter.search({q:query}, accToken, accTokenSecret, function (error, data, response) {
+  var geocode = "37.781157,-122.398720,4000mi";
+  twitter.search({q:query, geocode:geocode}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
       var tweets = extract_data(data);
-      res.render('results.jade', {data:JSON.stringify(tweets)});
+      var locations = extract_locations(data);
+      res.render('results.jade', {tweets:JSON.stringify(tweets), locations:JSON.stringify(locations)});
     }
   });
 });
@@ -44,15 +47,42 @@ app.listen(3000);
 
 function extract_data (data) {
   var tweets = [];
+  //console.log(JSON.stringify(data));
   for (var i=0; i< data.statuses.length; i++) {
     tweets.push({name:data.statuses[i].user.screen_name, 
       text:data.statuses[i].text, 
       tags:data.statuses[i].entities.hashtags, 
       time:data.statuses[i].created_at, 
-      loc:data.statuses[i].place});
+      //place:data.statuses[i].place,
+  	  geo:data.statuses[i].geo,
+  	  coordinates:data.statuses[i].coordinates,
+  	  location:data.statuses[i].user.location
+  	 });
   }
   console.log(JSON.stringify(tweets));
   return tweets;
+}
+
+function extract_locations (data) {
+	var tweets = extract_data(data);
+	var locations = [];
+	for (var i=0; i < tweets.length; i++) {
+		if (!tweets[i].geo) {
+			geocoder.geocode(tweets[i].location, function (err, data) {
+				if (err) {
+			    	console.log(JSON.stringify(err));
+			    }
+			    else { // success!!
+			    	console.log(data);
+			    	locations.push(data);
+			    }
+			});
+		} else {
+			locations.push(tweets[i].geo.coordinates);
+		}
+	}
+	console.log(JSON.stringify(locations));
+	return locations;
 }
 
 function encode_URI(uri) {

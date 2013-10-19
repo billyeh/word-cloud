@@ -3,6 +3,7 @@ var express = require('express');
 var twitterAPI = require('node-twitter-api');
 var jade = require('jade');
 var request = require('request');
+var fs = require('fs');
 
 // Configuration of Express
 var app = express();
@@ -43,8 +44,15 @@ app.post('/search', function(req, res) {
   });
 });
 
+app.get('/constrained-zoom.svg', function(req, res) {
+  var img = fs.readFileSync('./images/constrained-zoom.svg');
+  res.writeHead(200, {'Content-Type': 'image/gif' });
+  res.end();
+});
+
 app.listen(3000);
 
+// Helper functions
 function extract_data (data, query, res) {
   data.statuses.forEach(function(element, index) {
     var endpoint = 'http://www.sentiment140.com/api/classify?';

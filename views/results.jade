@@ -2,7 +2,9 @@ head
   link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css')
   script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
-  style
+  script(src='http://d3js.org/d3.v3.min.js')
+  script(src='http://d3js.org/topojson.v1.min.js')
+  style.
     .overlay {
       fill: none;
       pointer-events: all;
@@ -29,4 +31,6 @@ body
         p= t.name
         p!= t.text
         p= t.time
-  script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=800&h=350')
+  div.right-side
+    img(src='/constrained-zoom.svg')
+    script(type='text/javascript' src='//www.google.com/trends/embed.js?hl=en-US&q='+q+'&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=800&h=350')

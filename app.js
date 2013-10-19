@@ -84,20 +84,22 @@ function extract_data (data, query, res) {
         		if (!error && body) {
         			data_geo = JSON.parse(body);
 	        		if (data_geo.results[0].locations[0]) {
-						var lat = data_geo.results[0].locations[0].displayLatLng.lat;
-						var lng = data_geo.results[0].locations[0].displayLatLng.lng;
-						var latlng = [lat, lng];
-						tweet.coordinates = latlng;
-						tweets.push(tweet);
-						if (index == data.statuses.length-1) {
-				          res.render('results.jade', {data:JSON.stringify(tweets)});
-				        }
-					}
+    						var lat = data_geo.results[0].locations[0].displayLatLng.lat;
+    						var lng = data_geo.results[0].locations[0].displayLatLng.lng;
+    						var latlng = [lat, lng];
+    						tweet.coordinates = latlng;
+    						tweets.push(tweet);
+    						if (index == data.statuses.length-1) {
+                  console.log(group_on_map(tweets));
+                  res.render('results.jade', {data:JSON.stringify(tweets)});
+    				    }
+    					}
         		}
         	});
         }
         tweets.push(tweet);
         if (index == data.statuses.length-1) {
+          console.log(group_on_map(tweets));
           res.render('results.jade', {data:JSON.stringify(tweets), q:query});
         }
       }
@@ -121,4 +123,55 @@ function relink(link) {
   ret = ret.replace(/@([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
     '<a href="https://twitter.com/$1" target="_blank">@$1</a>');
   return ret;
+}
+
+function group_on_map(data) {
+  var ret = {};
+  for (var i = 0; i < data.length; i++) {
+    console.log(data[i].coordinates);
+    if (!data[i].coordinates) {
+      continue;
+    }
+    if (data[i].coordinates.coordinates) {
+      var key = data[i].coordinates.coordinates.join(',');
+    }
+    else if (data[i].coordinates) {
+      var key = data[i].coordinates.join(',');
+    }
+    if (!ret[key]) {
+      tags = extract_hashtags(data[i].hashtags, "");
+      ret[key] = {size:1, sentiment:data[i].sentiment, hashtags: tags, ids:[data[i].id]};
+    }
+    else {
+      ret[key].size += 1;
+      ret[key].sentiment += data[i].sentiment;
+      ret[key].hashtags += extract_hashtags(data[i].hashtags, ret[key].hashtags);
+      ret[key].ids = add_id(ret[key].ids, data[i].id);
+    }
+  }
+  return ret;
+}
+
+function extract_hashtags(hashtags, ret) {
+  if (!hashtags) {
+    return ret;
+  }
+  for (var i = 0; i < hashtags.length; i++) {
+    if (ret.indexOf(hashtags[i].text) == -1) {
+      if (ret.length == 0) {
+        ret = hashtags[i].text;
+      }
+      else {
+        ret = ret + ", " + hashtags[i].text;
+      }
+    }
+  }
+  return ret;
+}
+
+function add_id(ids, id) {
+  if (ids.indexOf(id) == -1) {
+    ids.push(id);
+  }
+  return ids;
 }

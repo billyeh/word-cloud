@@ -173,9 +173,6 @@ body
                   return '#3a87ad';
               }
           })
-          .on('mouseover', function() {
-            d3.select(this).style('stroke-width: 2px;')
-          })
           .attr("transform", function(d) {
               var coords = projection([d.coordinates[1], d.coordinates[0]]);
               return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";})
@@ -185,3 +182,9 @@ body
                 return "Hashtags: None";
               }
               return "Hashtags:" + d.hashtags; });
+    d3.selectAll('circle').on('mouseover', function() {
+      d3.select(this).style('stroke-width', 5);
+    });
+    d3.selectAll('circle').on('mouseout', function() {
+      d3.select(this).style('stroke-width', 1);
+    });

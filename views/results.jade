@@ -87,7 +87,7 @@ body
       var width = 960,
       height = 400;
 
-      var projection = d3.geo.equirectangular()
+      var projection = d3.geo.mercator()
           .translate([0, 0])
           .scale(width / 2 / Math.PI);
 
@@ -141,4 +141,20 @@ body
         $('a.accordion-toggle').click();
       });
 
-  p= JSON.stringify(grouped)
+  p(style='display:none', id='data')= JSON.stringify(grouped)
+
+  script.
+    var data = JSON.parse($('p#data').text());
+    var projection = d3.geo.mercator()
+          .translate([0, 0])
+          .scale(width / 2 / Math.PI);
+    var svg = d3.select('svg');
+    svg.selectAll("circles")
+          .data(data)
+        .enter()
+          .append("circle")
+          .attr("r",5)
+          .attr("transform", function(d) {
+              var coords = projection([d.coordinates[1], d.coordinates[0]]);
+              console.log("translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")");
+              return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";});

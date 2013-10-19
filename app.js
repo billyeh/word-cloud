@@ -31,8 +31,9 @@ app.get('/', function(req, res) {
 
 app.post('/search', function(req, res) {
   var query = encode_URI(req.body.querystring);
+  var geocode = "37.781157,-122.398720,4000mi";
   var count = 100;
-  twitter.search({q:query, count: count}, accToken, accTokenSecret, function (error, data, response) {
+  twitter.search({q:query, count: count, geocode:geocode}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
@@ -67,6 +68,28 @@ function extract_data (data, query, res) {
       }
     });
   });
+}
+
+function extract_locations (data) {
+	var tweets = extract_data(data);
+	var locations = [];
+	for (var i=0; i < tweets.length; i++) {
+		if (!tweets[i].geo) {
+			geocoder.geocode(tweets[i].location, function (err, data) {
+				if (err) {
+			    	console.log(JSON.stringify(err));
+			    }
+			    else { // success!!
+			    	console.log(data);
+			    	locations.push(data);
+			    }
+			});
+		} else {
+			locations.push(tweets[i].geo.coordinates);
+		}
+	}
+	console.log(JSON.stringify(locations));
+	return locations;
 }
 
 function encode_URI(uri) {

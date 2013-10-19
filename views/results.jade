@@ -38,24 +38,36 @@ head
     ::-webkit-scrollbar-corner {
         background: #000;
     }
+    .alert {
+      padding: 1px !important;
+      margin-bottom: 5px;
+    }
 body
   div(align='center')
     h1 WordCloud
   div.col-md-3(style="height:850px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     - var tweets = JSON.parse(data)
-    each t in tweets
-      if t.sentiment == 4
-        div
-          span= t.name
-          span(style="float:right;")= t.time
-          p(class="alert alert-success")!= t.text
-      if t.sentiment == 2
-          
-      if t.sentiment == 0
-        div
-          span= t.name 
-          span(style="float:right;")= t.time
-          p(class="alert alert-danger")!= t.text
+    - var already_displayed = {}
+    div.panel-group#accordion
+      each t in tweets
+        if !already_displayed[t.id]
+          - already_displayed[t.id] = true
+          if t.sentiment == 4
+            - var alert = 'success'
+          if t.sentiment == 0
+            - var alert = 'danger'
+          if t.sentiment == 4 || t.sentiment == 0
+            div(class='alert alert-'+alert)
+                div.panel-heading.panel-title
+                  a(class='accordion-toggle', data-toggle='collapse', data-parent='#accordion', href= '#'+t.id)= t.name
+                  span(style="float:right;")= t.time
+                div(id= t.id, class='panel-collapse collapse')
+                  if t.sentiment == 4
+                    div.panel-body
+                      p!= t.text
+                  if t.sentiment == 0
+                    div.panel-body
+                      p!= t.text
   div#right-side
     script.
       var width = 960,

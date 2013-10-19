@@ -31,6 +31,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/search', function(req, res) {
+  tweets = [];
   var query = encode_URI(req.body.querystring);
   var geocode = "37.781157,-122.398720,4000mi";
   var count = 100;

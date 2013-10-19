@@ -3,8 +3,8 @@ body
     h1 WordCloud
     p
       em Satisfy your need to learn about stupid trivial things.
-    form(action='search')
+    form(action='search', method='post')
       input(autofocus='autofocus', type='text', name='querystring', style='width: 400px;')
       br
-      input(id='search', type='submit', value='Search')
-      input(id='feelinglucky', type='submit', value='Random Trend')
+      input(id='search', type='submit', value='Search', name='firstbutton')
+      input(id='feelinglucky', type='submit', value='Random Trend', name='secondbutton')

@@ -27,14 +27,15 @@ app.get('/', function(req, res) {
 });
 
 app.post('/search', function(req, res) {
-  var query = req.body.querystring;
-  twitter.search({q:'bart strike'}, accToken, accTokenSecret, function (error, data, response) {
+  var query = encodeURIComponent(req.body.querystring);
+  console.log(query);
+  twitter.search({q:query}, accToken, accTokenSecret, function (error, data, response) {
     if (error) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
       var tweets = extract_data(data);
-      res.render('results.jade', {data:tweets});
+      res.render('results.jade', {data:JSON.stringify(tweets)});
       // console.log(JSON.stringify(tweets));
     }
   });

@@ -51,7 +51,7 @@ function extract_data (data, query, res) {
     var tweet = {
           id:element.id,
           name:element.user.screen_name, 
-          text:element.text, 
+          text:relink(element.text), 
           tags:element.entities.hashtags, 
           time:element.created_at, 
           location:element.user.location,
@@ -103,4 +103,9 @@ function encode_URI(uri) {
              .replace(/\)/g, "%29")
              .replace(/\*/g, "%2A"));
   }
+}
+
+function relink(link) {
+  return link.replace(/http:\/\/([a-z0-9_\.\-\+\&\!\#\~\/\,]+)/ig,
+    '<a href="http://$1" target="_blank">http://$1</a>');
 }

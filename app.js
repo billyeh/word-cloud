@@ -31,7 +31,6 @@ app.get('/', function(req, res) {
 });
 
 app.post('/search', function(req, res) {
-  res.header('Access-Control-Allow-Origin', "*"); // pretty sure this is terrible
   var query = encode_URI(req.body.querystring);
   var geocode = "37.781157,-122.398720,4000mi";
   var count = 100;
@@ -127,6 +126,7 @@ function relink(link) {
 
 function group_on_map(data) {
   var ret = {};
+  var res = [];
   for (var i = 0; i < data.length; i++) {
     if (!data[i].coordinates) {
       continue;
@@ -148,7 +148,11 @@ function group_on_map(data) {
       ret[key].ids = add_id(ret[key].ids, data[i].id);
     }
   }
-  return ret;
+  for (var key in ret) {
+    ret[key].coordinates = key.split(',');
+    res.push(ret[key]);
+  }
+  return res;
 }
 
 function extract_hashtags(hashtags, ret) {

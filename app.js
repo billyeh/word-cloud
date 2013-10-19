@@ -33,10 +33,23 @@ app.post('/search', function(req, res) {
       console.log(JSON.stringify(error));
     }
     else { // success!!
-      res.render('results.jade', {data: JSON.stringify(data)});
+      res.render('index.jade', {title: 'Franz Enzenhofer'});
       console.log(JSON.stringify(data));
+      var tweets = extract_data(data);
+      console.log(JSON.stringify(tweets));
     }
   });
 });
 
 app.listen(3000);
+
+
+function extract_data (data) {
+  var tweets = [];
+  for (var i=0; i< data.statuses.length; i++) {
+    tweets.push({name:data.statuses[i].user.screen_name, text:data.statuses[i].text, tags:data.statuses[i].entities.hashtags, time:data.statuses[i].created_at, loc:data.statuses[i].place});
+  }
+  console.log(JSON.stringify(tweets));
+  return tweets;
+
+}

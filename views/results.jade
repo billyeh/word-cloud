@@ -20,6 +20,9 @@ head
       stroke-linejoin: round;
       stroke-linecap: round;
     }
+    circle {
+      stroke: #333;
+    }
 
     ::-webkit-scrollbar {
         height: 12px;
@@ -75,18 +78,15 @@ body
             - var alert = 'success'
           if t.sentiment == 0
             - var alert = 'danger'
-          if t.sentiment == 4 || t.sentiment == 0
-            div(class='alert alert-'+alert)
-                div.panel-heading.panel-title
-                  a(class='accordion-toggle', data-toggle='collapse', data-parent='#accordion', href= '#'+t.id)= t.name
-                  span(style="float:right;")= t.time
-                div(id= t.id, class='panel-collapse collapse')
-                  if t.sentiment == 4
-                    div.panel-body
-                      p!= t.text
-                  if t.sentiment == 0
-                    div.panel-body
-                      p!= t.text
+          if t.sentiment == 2
+            - var alert = 'info'
+          div(class='alert alert-'+alert)
+              div.panel-heading.panel-title
+                a(class='accordion-toggle', data-toggle='collapse', data-parent='#accordion', href= '#'+t.id)= t.name
+                span(style="float:right;")= t.time
+              div(id= t.id, class='panel-collapse collapse')
+                div.panel-body
+                  p!= t.text
   div#right-side
     script.
       var width = 960,
@@ -154,21 +154,39 @@ body
           .translate([0, 0])
           .scale(width / 2 / Math.PI);
     var svg = d3.select('svg');
+    svg.append("text")
+        .attr("x", (0))             
+        .attr("y", 15)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Tweets Grouped by Region and Overall Sentiment of Region");
     svg.selectAll("circles")
           .data(data)
         .enter()
           .append("circle")
           .attr("r", function(d) {
-              return 3*Math.sqrt(d.size);
+              return 4*Math.sqrt(d.size);
           })
           .style("fill", function(d) {
               if (d.sentiment / d.size > 2) {
-                  return '#dff0d8';
+                  return 'rgb(70, 136, 71)';
               }
               else if (d.sentiment / d.size < 2) {
-                  return '#f2dede';
+                  return 'rgb(185, 74, 72)';
               }
+              else {
+                  return '#3a87ad';
+              }
+          })
+          .on('mouseover', function() {
+            d3.select(this).style('stroke-width: 2px;')
           })
           .attr("transform", function(d) {
               var coords = projection([d.coordinates[1], d.coordinates[0]]);
-              return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";});
+              return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";})
+          .append("svg:title")
+          .text(function(d) { 
+              if (!d.hashtags) {
+                return "Hashtags: None";
+              }
+              return "Hashtags:" + d.hashtags; });

@@ -4,10 +4,12 @@ head
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
 body
   div(style='margin-top: 15em' align='center')
-    img(src= '/logo.png')
+    h1
+      span Word
+      span(style='color:3AA9E8') Cloud
     p
       em Satisfy your need to learn about stupid trivial things.
     form(action='search', method='post')
       div.input-group
         input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;vertical-align:top;')
-        button(style='line-height:2;vertical-align:top;', id='search', type='submit', value='Search', name='firstbutton') SearchWordCloud
+        button(style='line-height: 2;vertical-align:top;', id='search', type='submit', value='Search', name='firstbutton') Search

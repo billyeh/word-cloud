@@ -52,7 +52,7 @@ head
       cursor: pointer; !important
     }
     #title {
-        padding-bottom: 15px;
+        padding-bottom: -5px;
         padding-left: 5px;
     }
     #bar-graph {
@@ -63,6 +63,10 @@ head
         margin: 1px;
         color: white;
     }
+    hr {
+      margin-top:5px;
+      margin-bottom:15px;
+    }
 body
   div(id="title", align='left')
     span
@@ -71,8 +75,9 @@ body
     div(style="float:right;padding-top:17px;padding-right:3px;")
       form(action='search', method='post')
           div.input-group
-            input(class='form-control', autofocus='autofocus', type='text', name='querystring', style='width: 400px;vertical-align:top;')
-            button(style='line-height:2;vertical-align:top;', id='search', type='submit', value='Search', name='firstbutton') Search
+            input(class='form-control', value=q, autofocus='autofocus', type='text', name='querystring', style='width: 400px;vertical-align:top;')
+            button(style='line-height: 2;vertical-align:top;', id='search', type='submit', value='Search', name='firstbutton') Search
+  hr
   div.col-md-3(style="max-height:750px;overflow-y:scroll;overflow-x:hidden;bottom:10px;right:10px;")
     h3 Sentimental Tweets
     span(style='float:right;margin-top:5px;', id='show-all') Show all
@@ -164,6 +169,12 @@ body
     script.
       $('#show-all').click(function() {
         $('a.accordion-toggle').click();
+        if ($(this).text() === 'Show all') {
+          $(this).text('Hide all');
+        }
+        else {
+          $(this).text('Show all');
+        }
       });
 
   p(style='display:none', id='data')= JSON.stringify(grouped)
@@ -180,6 +191,39 @@ body
         .style("font-size", "13px") 
         .style('font-color', '#444')
         .text("Tweets Grouped by Region and Overall Sentiment of Region");
+    svg.append("text")
+        .attr("x", 50)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Positive");
+    svg.append("circle")
+        .attr("cx", 35)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", 'rgb(70, 136, 71)');
+    svg.append("text")
+        .attr("x", 200)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Neutral");
+    svg.append("circle")
+        .attr("cx", 185)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", '#3a87ad');
+    svg.append("text")
+        .attr("x", 120)             
+        .attr("y", 380)
+        .style("font-size", "13px") 
+        .style('font-color', '#444')
+        .text("Negative");
+    svg.append("circle")
+        .attr("cx", 107)             
+        .attr("cy", 376)
+        .attr('r', 3)
+        .style("fill", 'rgb(185, 74, 72)');
     svg.selectAll("circles")
           .data(data)
         .enter()
@@ -198,9 +242,6 @@ body
                   return '#3a87ad';
               }
           })
-          .on('mouseover', function() {
-            d3.select(this).style('stroke-width: 2px;')
-          })
           .attr("transform", function(d) {
               var coords = projection([d.coordinates[1], d.coordinates[0]]);
               return "translate(" + (coords[0] + 480) + "," + (coords[1] + 200) + ")";})
@@ -210,3 +251,9 @@ body
                 return "Hashtags: None";
               }
               return "Hashtags:" + d.hashtags; });
+    d3.selectAll('circle').on('mouseover', function() {
+      d3.select(this).style('stroke-width', 5);
+    });
+    d3.selectAll('circle').on('mouseout', function() {
+      d3.select(this).style('stroke-width', 1);
+    });

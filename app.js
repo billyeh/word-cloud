@@ -52,7 +52,7 @@ app.get('/world-50m.json', function(req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(process.env.VMC_APP_PORT || 3000, null);
 
 // Helper functions
 function extract_data (data, query, res) {
@@ -155,13 +155,13 @@ function group_on_map(data) {
       var key = data[i].coordinates.join(',');
     }
     if (!ret[key]) {
-      tags = extract_hashtags(data[i].hashtags, "");
+      tags = extract_hashtags(data[i].tags, "");
       ret[key] = {size:1, sentiment:data[i].sentiment, hashtags: tags, ids:[data[i].id]};
     }
     else {
       ret[key].size += 1;
       ret[key].sentiment += data[i].sentiment;
-      ret[key].hashtags += extract_hashtags(data[i].hashtags, ret[key].hashtags);
+      ret[key].hashtags += extract_hashtags(data[i].tags, ret[key].hashtags);
       ret[key].ids = add_id(ret[key].ids, data[i].id);
     }
   }
@@ -177,12 +177,12 @@ function extract_hashtags(hashtags, ret) {
     return ret;
   }
   for (var i = 0; i < hashtags.length; i++) {
-    if (ret.indexOf(hashtags[i].text) == -1) {
+    if (ret.indexOf(hashtags[i].text.toLowerCase()) == -1) {
       if (ret.length == 0) {
-        ret = hashtags[i].text;
+        ret = hashtags[i].text.toLowerCase();
       }
       else {
-        ret = ret + ", " + hashtags[i].text;
+        ret = ret + ", " + hashtags[i].text.toLowerCase();
       }
     }
   }
